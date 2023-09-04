@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Input from '../../components/Input/Input';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 interface InitialStateProps {
   name: string;
@@ -15,13 +17,29 @@ const initialState: InitialStateProps = {
   password: ''
 };
 const Page = () => {
+  const router = useRouter();
   const [state, setState] = useState(initialState);
   const handleChange = (e: any) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    axios
+      .post('/api/register', state)
+      .then(() => {
+        router.refresh();
+      })
+      .then(() => {
+        setTimeout(() => {
+          router.push('/login');
+        }, 2500);
+      })
+      .catch((err: any) => {});
+  };
+
   return (
-    <form className='text-center'>
+    <form className='text-center' onSubmit={onSubmit}>
       <div className='flex flex-col justify-center h-[450px] w-[350px] m-auto gap-2'>
         <Input
           id='name'
@@ -47,6 +65,7 @@ const Page = () => {
           placeholder='Password'
           onChange={handleChange}
         />
+        <button type='submit'>Submit</button>
       </div>
     </form>
   );
