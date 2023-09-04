@@ -5,15 +5,14 @@ import Input from '../../components/Input/Input';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { callback } from 'next-auth/core/routes';
 
 interface InitialStateProps {
-  name: string;
   email: string;
   password: string;
 }
 
 const initialState: InitialStateProps = {
-  name: '',
   email: '',
   password: ''
 };
@@ -26,30 +25,23 @@ const Page = () => {
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    axios
-      .post('/api/register', state)
-      .then(() => {
+    signIn('credentials', {
+      ...state,
+      redirect: false
+    }).then(callback => {
+      if (callback?.ok) {
         router.refresh();
-      })
-      .then(() => {
-        setTimeout(() => {
-          router.push('/login');
-        }, 2500);
-      })
-      .catch((err: any) => {});
+      }
+      if (callback?.error) {
+        throw new Error('Wrong Credentials');
+      }
+    });
+    router.push('/');
   };
 
   return (
     <form className='text-center' onSubmit={onSubmit}>
       <div className='flex flex-col justify-center h-[450px] w-[350px] m-auto gap-2'>
-        <Input
-          id='name'
-          type='text'
-          name='name'
-          value={state.name}
-          placeholder='Name'
-          onChange={handleChange}
-        />
         <Input
           id='email'
           type='email'
@@ -68,9 +60,10 @@ const Page = () => {
         />
         <button type='submit'>Submit</button>
       </div>
+
       <div>
         <p>
-          Do you have an account? <Link href='/login'>Sign in</Link>
+          Haven't you got an account yet? <Link href='/register'>Register</Link>
         </p>
       </div>
     </form>
