@@ -16,7 +16,9 @@ const initialState: InitialStateProps = {
 };
 const Page = () => {
   const [state, setState] = useState(initialState);
-  const handleChange = () => {};
+  const handleChange = (e: any) => {
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
 
   return (
     <form className='text-center'>
@@ -24,6 +26,7 @@ const Page = () => {
         <Input
           id='name'
           type='text'
+          name='name'
           value={state.name}
           placeholder='Name'
           onChange={handleChange}
@@ -31,6 +34,7 @@ const Page = () => {
         <Input
           id='email'
           type='email'
+          name='email'
           value={state.email}
           placeholder='Email'
           onChange={handleChange}
@@ -38,6 +42,7 @@ const Page = () => {
         <Input
           id='password'
           type='password'
+          name='password'
           value={state.password}
           placeholder='Password'
           onChange={handleChange}
