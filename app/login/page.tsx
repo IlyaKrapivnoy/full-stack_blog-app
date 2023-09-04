@@ -2,10 +2,9 @@
 
 import { FormEvent, useState } from 'react';
 import Input from '../../components/Input/Input';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { callback } from 'next-auth/core/routes';
+import { signIn } from 'next-auth/react';
 
 interface InitialStateProps {
   email: string;
